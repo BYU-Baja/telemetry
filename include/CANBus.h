@@ -11,3 +11,8 @@ class CANBusController: public Controller {
         uint32_t baudrate;
         void _handleMessage(CAN_message_t &msg);
 };
+
+class CANMessage {
+    public:
+        CANMessage(CAN_message_t);
+};
