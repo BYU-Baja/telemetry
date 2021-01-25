@@ -1,0 +1,3 @@
+[submodule "lib/xbee_pro_interface_arduino"]
+	path = lib/xbee_pro_interface_arduino
+	url = https://github.com/BYU-Baja/xbee_pro_interface_arduino.git
