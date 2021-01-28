@@ -15,12 +15,10 @@ class Sensor {
 }
 
 class CANBusController {
-    + void onMessage(Message, void* messageHandler)
 }
 
 class RadioModuleController {
     + void sendMessage()
-    + void onMessage(Message, void* messageHandler)
 }
 
 class SDCardController {
