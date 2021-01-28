@@ -5,6 +5,15 @@ class Controller {
     + void update()
 }
 
+class MessageHandler {
+    + void onMessage<Message>(void* handler)
+}
+
+class Sensor {
+    + void setup()
+    + void update()
+}
+
 class CANBusController {
     + void onMessage(Message, void* messageHandler)
 }
@@ -15,22 +24,29 @@ class RadioModuleController {
 }
 
 class SDCardController {
-    + fileptr openFile()
+    + fileptr openFile(filename)
     + void write(fileptr)
     + void read(fileptr)
+    + void close(fileptr)
+    + void writeCanMessage()
+    + void writeRadioMessage()
 }
 
-class CANMessage {
+class Message {
     + int id
 }
 
-class RadioMesaage {
-    + int id
-}
+class CANMessage {}
 
-Controller <|-- GPS 
+class RadioMesaage {}
+
+Sensor <|-- GPS 
+Message <|-- CANMessage
+Message <|-- RadioMesaage
 Controller <|-- CANBusController
+MessageHandler <|-- CANBusController
 Controller <|-- RadioModuleController
+MessageHandler <|-- RadioModuleController
 Controller <|-- SDCardController
 
 
