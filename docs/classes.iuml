@@ -1,0 +1,37 @@
+@startuml Classes
+
+class Controller {
+    + void setup()
+    + void update()
+}
+
+class CANBusController {
+    + void onMessage(Message, void* messageHandler)
+}
+
+class RadioModuleController {
+    + void sendMessage()
+    + void onMessage(Message, void* messageHandler)
+}
+
+class SDCardController {
+    + fileptr openFile()
+    + void write(fileptr)
+    + void read(fileptr)
+}
+
+class CANMessage {
+    + int id
+}
+
+class RadioMesaage {
+    + int id
+}
+
+Controller <|-- GPS 
+Controller <|-- CANBusController
+Controller <|-- RadioModuleController
+Controller <|-- SDCardController
+
+
+@enduml
