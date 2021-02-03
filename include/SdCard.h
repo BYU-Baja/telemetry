@@ -6,8 +6,8 @@ class SdCardController: public Controller {
         void setup();
         void update();
 
-        void write(FILE *);
-        void read(FILE *);
-        void close(FILE *);
-        FILE * openFile(string);
+        void write(File *);
+        void read(File *);
+        void close(File *);
+        File * openFile(string);
 };

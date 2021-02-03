@@ -1,7 +1,7 @@
 #include "SdCard.h"
 #include <stdio.h>
 #include <iostream>
-// using namespace std;
+#using namespace std;
 
 #include <SPI.h>
 #include <SD.h>
@@ -58,26 +58,28 @@ void setup(){
 }
 
 void update(){
-
+    while (myFile.available()) {
+      Serial.write(myFile.read());
+    }
 }
 
-FILE * openFile(string filename){
+File * openFile(string filename){
     if(!SD.exists(filename)){
         SD.mkdir(filename);
     }
     myFile = SD.open(filename, FILE_WRITE);
-    FILE * fileptr = &myFile;
+    File * fileptr = &myFile;
     return fileptr;
 }
 
 void write(FILE * fileptr){
-    myFile.write("here is data"); //what to write? takes data or buf, len
+    *fileptr.write("here is data"); //what to write? takes data or buf, len
 }
 
 void read(FILE * fileptr){
-    myFile.read();
+    *fileptr.read();
 }
 
 void close(FILE * fileptr){
-    myFile.close();
+    *fileptr.close();
 }
