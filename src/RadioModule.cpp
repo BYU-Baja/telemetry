@@ -1,18 +1,18 @@
 #include "RadioModule.h"
 #include <Arduino.h>
-#include <sx_pro.h>
 
-void readParam(char *param, SXPro mod) {
+void RadioModule::readParam(char *param, SXPro mod) {
     Serial.print(param);
     Serial.print(": ");
     Serial.println(mod.readParam(param));
 }
 
-void setup() {
-    Serial.begin(9600);
-    Serial5.begin(9600);
+void RadioModule::setup() {
+    Serial8.begin(9600);
     SXPro module = SXPro((int8_t) 9, false);
-    module.begin(Serial5);
+    module.begin(Serial8);
+
+    Serial.println("Attempting to connect to radio module...");
 
     if (module.enterCommandMode()) {
         Serial.println("Entered command mode.");
@@ -29,11 +29,12 @@ void setup() {
         readParam("ID", module);
         if (module.exitCommandMode())
             Serial.println("Exited command mode.");
+        Serial.println("Done.");
+    } else {
+        Serial.println("Failed to connect");
     }
-
-    Serial.println("Done.");
 }
 
-void update(){
+void RadioModule::update(){
 
 }
