@@ -9,12 +9,14 @@ Status status;
 void setup() {
   // put your setup code here, to run once:
     Serial.begin(9600);
-    // Serial.println("Hello.");
-    // RadioModule radio;
-    // radio.setup();
+    //Serial.println("Hello.");
+    //RadioModule radio;
+    //radio.setup();
 
     status.setup();
-    status.setLEDBlink(0, STANDARD);
+    //status.setLEDBlink(0, DOUBLE_BLINK);
+    status.setLEDBlink(2, DIT_DOT);
+    //status.setLEDBlink(4, VERY_FAST);
 }
 
 void loop() {
