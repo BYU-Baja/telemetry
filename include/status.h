@@ -9,7 +9,7 @@ enum BLINK_RATE {
     NONE_,
     STANDARD,
     FAST, 
-    SLOW,
+    VERY_FAST,
     DIT_DOT,
     DOUBLE_BLINK
 };
