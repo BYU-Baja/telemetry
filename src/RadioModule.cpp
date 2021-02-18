@@ -1,17 +1,19 @@
 #include "RadioModule.h"
 #include <Arduino.h>
 
+SXPro module = SXPro((int8_t) 9, false);
+
+RadioModule::RadioModule(Stream &port) {
+    this->radioModulePort = &port;
+}
+
 void RadioModule::readParam(char *param, SXPro mod) {
     Serial.print(param);
     Serial.print(": ");
     Serial.println(mod.readParam(param));
 }
 
-void RadioModule::setup() {
-    Serial8.begin(9600);
-    SXPro module = SXPro((int8_t) 9, false);
-    module.begin(Serial8);
-
+bool RadioModule::checkRadio() {
     Serial.println("Attempting to connect to radio module...");
 
     if (module.enterCommandMode()) {
@@ -30,11 +32,17 @@ void RadioModule::setup() {
         if (module.exitCommandMode())
             Serial.println("Exited command mode.");
         Serial.println("Done.");
-    } else {
-        Serial.println("Failed to connect");
+        return true;
     }
+    
+    Serial.println("Failed to connect");
+    return false;
 }
 
-void RadioModule::update(){
+void RadioModule::setup() {
+    module.begin(*radioModulePort);
+}
 
+void RadioModule::update() {
+    // Check the incoming data from the radio module.
 }

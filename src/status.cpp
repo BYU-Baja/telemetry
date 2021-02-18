@@ -3,7 +3,7 @@
 
 uint8_t __STATUS_LED_ARRAY[5] = {2, 3, 4, 5, 6};
 uint8_t __STATUS_LED_NUM = 5;
-BLINK_RATE __STATUS_LED_BR[5] = {NONE, NONE, NONE, NONE, NONE};
+BLINK_RATE __STATUS_LED_BR[5] = {NONE_, NONE_, NONE_, NONE_, NONE_};
 uint32_t lastTime;
 uint8_t state = 0;
 
@@ -17,7 +17,7 @@ void Status::update() {
     switch(state) {
         case 0:
             for (uint8_t i = 0; i < __STATUS_LED_NUM; i++)
-                if (__STATUS_LED_BR[i] != NONE)
+                if (__STATUS_LED_BR[i] != NONE_)
                     setStatusLED(i, HIGH);
             state = 1;
             lastTime = millis();
@@ -70,7 +70,7 @@ void Status::setLEDBlink(uint8_t led, BLINK_RATE blinkRate) {
 
 void Status::setStatusLED(uint8_t led, uint8_t signal) {
     if (led <= __STATUS_LED_NUM) {
-        __STATUS_LED_BR[led] = NONE;
+        __STATUS_LED_BR[led] = NONE_;
         digitalWrite(__STATUS_LED_ARRAY[led], signal);
     }
 }

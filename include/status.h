@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 enum BLINK_RATE {
-    NONE,
+    NONE_,
     STANDARD,
     FAST, 
     SLOW,
