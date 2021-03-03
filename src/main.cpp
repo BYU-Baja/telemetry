@@ -4,8 +4,11 @@
 #include "CANBus.h"
 
 Status status;
-CANBusController _canBus(500000);
 RadioModule radio(Serial8);
+CANBusController _canBus(500000, radio);
+
+long _lasttime = 0;
+bool _isRadioConnected = false;
 
 void setup() {
   // put your setup code here, to run once:
@@ -21,10 +24,16 @@ void setup() {
     Serial.flush();
 
     radio.setup();
-    radio.checkRadio();
+    _isRadioConnected = radio.checkRadio();
 
     status.setup();
-    status.setLEDBlink(2, STANDARD);
+    // status.setLEDBlink(2, DOUBLE_BLINK);
+
+    if (_isRadioConnected) {
+      status.setStatusLED(0, HIGH);
+    } else {
+      status.setLEDBlink(0, DOUBLE_BLINK);
+    }
 
     _canBus.setup();
 }
@@ -33,7 +42,11 @@ void loop() {
   // put your main code here, to run repeatedly:
   Serial.flush();
   status.update();
+  if (millis() - _lasttime > 1000) {
+    radio.sendMessage((uint8_t *)"A", 1);
+    _lasttime = 0;
+  }
   // radio.update();
-  _canBus.update();
+  // _canBus.update();
   delay(10);
 }

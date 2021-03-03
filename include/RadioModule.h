@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include "Controller.h"
 #include "sx_pro.h"
-
+#include "frame.h"
 class RadioModule: public Controller {
     private: 
       void readParam(char *param, SXPro mod);
@@ -15,7 +15,9 @@ class RadioModule: public Controller {
       void setup();
       void update();
       bool checkRadio();
-      // void sendMessage();
+      void setMode();
+      void sendMessage(uint8_t* msg, uint16_t len);
+      void sendFrame(rf_frame frame);
 };
 
 #endif
