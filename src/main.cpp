@@ -22,12 +22,18 @@ void setup() {
 
     Serial.println("Setting up can bus and radio module.");
     Serial.flush();
+    
+    status.setup();
+    // status.setStatusLED(0, HIGH);
+    // status.setStatusLED(1, HIGH);
+    // status.setStatusLED(2, HIGH);
+    // status.setStatusLED(3, HIGH);
+    // status.setStatusLED(4, HIGH);
+    // status.setLEDBlink(2, DOUBLE_BLINK);
 
     radio.setup();
     _isRadioConnected = radio.checkRadio();
 
-    status.setup();
-    // status.setLEDBlink(2, DOUBLE_BLINK);
 
     if (_isRadioConnected) {
       status.setStatusLED(0, HIGH);
@@ -42,11 +48,11 @@ void loop() {
   // put your main code here, to run repeatedly:
   Serial.flush();
   status.update();
-  if (millis() - _lasttime > 1000) {
-    radio.sendMessage((uint8_t *)"A", 1);
-    _lasttime = 0;
-  }
-  // radio.update();
-  // _canBus.update();
+  // if (millis() - _lasttime > 1000) {
+  //   radio.sendMessage((uint8_t *)"A", 1);
+  //   _lasttime = 0;
+  // }
+  radio.update();
+  _canBus.update();
   delay(10);
 }

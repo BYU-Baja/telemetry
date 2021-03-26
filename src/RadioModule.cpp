@@ -70,4 +70,15 @@ void RadioModule::sendFrame(rf_frame frame) {
 
 void RadioModule::update() {
     // Check the incoming data from the radio module.
+    rf_frame frame;
+    frame.id = 0x1;
+    frame.flag = 0x0;
+    frame.data_length = 4;
+    frame.data[0] = 0x0;
+    frame.data[1] = 0x1;
+    frame.data[2] = 0x2;
+    frame.data[3] = 0x3;
+    sendFrame(frame);
+
+    delay(10);
 }

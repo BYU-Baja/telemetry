@@ -2,8 +2,13 @@
 #include <list>
 #include "CANBus.h"
 #include "frame.h"
+#include "Wire.h"
+
+#define TIRE_DIAMETER_INCHES 20
+#define RPM_MPH(a) (a * TIRE_DIAMETER_INCHES * 3.1415926 / 62260)
 
 #define TRANSPARENT
+#define DISPLAY_ADDR 0x16
 
 FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> canbus;
 std::map<int, CANMessage> _converter = {};
@@ -19,6 +24,7 @@ CANBusController::CANBusController(int baudrate, RadioModule &radio) {
 void CANBusController::setup() {
     canbus.begin();
     canbus.setBaudRate(this->baudrate);
+    Wire1.begin();
 }
 
 void CANBusController::update() {
@@ -28,48 +34,21 @@ void CANBusController::update() {
 }
 
 void CANBusController::_handleMessage(CAN_message_t &msg) {
-    // #ifdef TRANSPARENT
     // Serial.println("Received Message.");
-    // Serial.flush();
-    // if (msg.id == 0x0F5) {
-    //   byte lng[4];
-    //   byte lat[4];
-    //   char formatted[100];
-    //   lng[0] = msg.buf[0];
-    //   lng[1] = msg.buf[1];
-    //   lng[2] = msg.buf[2];
-    //   lng[3] = msg.buf[3];
-      
-    //   Serial.print("Latitude: ");
-    //   Serial.print(*(float *)lng);
-    //   Serial.print(", ");
-      
-    //   lat[0] = msg.buf[4];
-    //   lat[1] = msg.buf[5];
-    //   lat[2] = msg.buf[6];
-    //   lat[3] = msg.buf[7];  
-          
-    //   Serial.print("Longitude: ");
-    //   Serial.print(*(float *)lat);
+    Serial.flush();
+    Serial.flush();
+    Serial.print(msg.id, HEX);
+    Serial.print(" ");
+    Serial.print(msg.len);
+    Serial.print(" ");
 
-    //   sprintf(formatted, "%f, %f\n", *(float *)lng, *(float *)lat);
-    //   rm.sendMessage((uint8_t*)formatted, strlen(formatted));
-      
-    // }  else {
-    //     Serial.flush();
-    //     Serial.print(msg.len, HEX);
-    //     Serial.print(" ");
-    //     Serial.print(msg.len);
-    //     Serial.print(" ");
+    for (int i = 0; i < msg.len; i++)  {  // print the data
+        Serial.print(msg.buf[i], HEX);
+        Serial.print(" ");
+    }
+    Serial.println();
 
-    //     for (int i = 0; i < msg.len; i++)  {  // print the data
-    //     Serial.print(msg.buf[i], HEX);
-    //     Serial.print(" ");
-    //     }
-    //     rm.sendMessage(msg.buf, msg.len);
-    // }
-    // Serial.println();
-    // #endif
+
     rf_frame frame;
     frame.flag = 0;
     frame.id = msg.id;
@@ -78,4 +57,69 @@ void CANBusController::_handleMessage(CAN_message_t &msg) {
         frame.data[i] = msg.buf[i];
     }
     rm.sendFrame(frame);
+
+    // Calculate the speed of the vehicle
+    if (msg.id == 0xa4) {
+        char data[50];
+        float_uint8_converter conv;
+        conv.data[0] = msg.buf[0];
+        conv.data[1] = msg.buf[1];
+        conv.data[2] = msg.buf[2];
+        conv.data[3] = msg.buf[3];
+
+        float speed = RPM_MPH(conv.value);
+        sprintf(data, "speed: %f\n", speed);
+        Serial.printf(data, strlen(data));
+
+        // Transmit to I2C
+        conv.value = speed;
+        Wire1.beginTransmission(DISPLAY_ADDR);
+        Wire1.write(conv.data[0]);
+        Wire1.write(conv.data[1]);
+        Wire1.write(conv.data[2]);
+        Wire1.write(conv.data[3]);
+        Wire1.endTransmission();
+    }
+
+
+    // if (msg.id == 0xa1) {
+    //     float_uint8_converter conv;
+    //     conv.data[0] = msg.buf[0];
+    //     conv.data[1] = msg.buf[1];
+    //     conv.data[2] = msg.buf[2];
+    //     conv.data[3] = msg.buf[3];
+    //     sprintf(data, "throttle: %f\n", conv.value);
+    //     Serial.printf(data, strlen(data));
+    //     rm.sendMessage((uint8_t *)data, strlen(data));
+    // }
+    // if (msg.id == 0xa2) {
+    //     float_uint8_converter conv;
+    //     conv.data[0] = msg.buf[0];
+    //     conv.data[1] = msg.buf[1];
+    //     conv.data[2] = msg.buf[2];
+    //     conv.data[3] = msg.buf[3];
+    //     sprintf(data, "engine rpm: %f\n", conv.value);
+    //     Serial.printf(data, strlen(data));
+    //     rm.sendMessage((uint8_t *)data, strlen(data));
+    // }
+    // if (msg.id == 0xa3) {
+    //     float_uint8_converter conv;
+    //     conv.data[0] = msg.buf[0];
+    //     conv.data[1] = msg.buf[1];
+    //     conv.data[2] = msg.buf[2];
+    //     conv.data[3] = msg.buf[3];
+    //     sprintf(data, "right rpm: %f\n", conv.value);
+    //     Serial.printf(data, strlen(data));
+    //     rm.sendMessage((uint8_t *)data, strlen(data));
+    // }
+    // if (msg.id == 0xa4) {
+    //     float_uint8_converter conv;
+    //     conv.data[0] = msg.buf[0];
+    //     conv.data[1] = msg.buf[1];
+    //     conv.data[2] = msg.buf[2];
+    //     conv.data[3] = msg.buf[3];
+    //     sprintf(data, "left rpm: %f\n", conv.value);
+    //     Serial.printf(data, strlen(data));
+    //     rm.sendMessage((uint8_t *)data, strlen(data));
+    // }
 }
