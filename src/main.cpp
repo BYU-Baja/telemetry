@@ -32,7 +32,7 @@ void setup() {
     // status.setLEDBlink(2, DOUBLE_BLINK);
 
     radio.setup();
-    _isRadioConnected = radio.checkRadio();
+    // _isRadioConnected = radio.checkRadio();
 
 
     if (_isRadioConnected) {
