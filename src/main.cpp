@@ -31,8 +31,8 @@ void setup() {
     // status.setStatusLED(4, HIGH);
     // status.setLEDBlink(2, DOUBLE_BLINK);
 
-    radio.setup();
-    _isRadioConnected = radio.checkRadio();
+    //radio.setup();
+    //_isRadioConnected = radio.checkRadio();
 
 
     if (_isRadioConnected) {
@@ -52,7 +52,7 @@ void loop() {
   //   radio.sendMessage((uint8_t *)"A", 1);
   //   _lasttime = 0;
   // }
-  radio.update();
+  //radio.update();
   _canBus.update();
   delay(10);
 }
