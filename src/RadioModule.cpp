@@ -2,12 +2,14 @@
 #include "frame.h"
 #include <Arduino.h>
 
+//setup radio module class SXpro(reset_pin_number, new_line)
 SXPro module = SXPro((int8_t) 9, false);
 
 RadioModule::RadioModule(Stream &port) {
     this->radioModulePort = &port;
 }
 
+//function to read a parameter from the radio module
 void RadioModule::readParam(char *param, SXPro mod) {
     Serial.print(param);
     Serial.print(": ");
@@ -21,7 +23,9 @@ bool RadioModule::checkRadio() {
         Serial.println("Entered command mode.");
         module.reset();
         delay(2000);
-        readParam("AF", module);
+
+        //see the Xbee sx pro user's manual for definition of these AT commands
+        readParam("AF", module); 
         readParam("ID", module);
         readParam("BR", module);
         readParam("PL", module);
