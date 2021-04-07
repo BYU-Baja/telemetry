@@ -2,10 +2,12 @@
 #include "RadioModule.h"
 #include "status.h"
 #include "CANBus.h"
+#include "GPS_Sensor.h"
 
 Status status;
 RadioModule radio(Serial8);
-CANBusController _canBus(500000, radio);
+CANBusController _canBus(1000000, radio);
+// GPSSensor gpsSensor(radio);
 
 long _lasttime = 0;
 bool _isRadioConnected = false;
@@ -32,7 +34,7 @@ void setup() {
     // status.setLEDBlink(2, DOUBLE_BLINK);
 
     radio.setup();
-    // _isRadioConnected = radio.checkRadio();
+    _isRadioConnected = radio.checkRadio();
 
 
     if (_isRadioConnected) {
@@ -42,12 +44,15 @@ void setup() {
     }
 
     _canBus.setup();
+    // gpsSensor.setup();
+
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   Serial.flush();
   status.update();
+  // gpsSensor.update();
   // if (millis() - _lasttime > 1000) {
   //   radio.sendMessage((uint8_t *)"A", 1);
   //   _lasttime = 0;

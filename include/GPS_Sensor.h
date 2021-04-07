@@ -9,6 +9,8 @@ class GPSSensor: public Controller {
         GPSSensor(RadioModule &radio);
         void setup();
         void update();
+    private:
+        void parseGPSData();
 };
 
 #endif
