@@ -4,18 +4,23 @@
 #include "CANBus.h"
 #include "GPS_Sensor.h"
 
-Status status;
-RadioModule radio(Serial8);
-CANBusController _canBus(1000000, radio);
-// GPSSensor gpsSensor(radio);
+#define BAUD_RATE 500000
 
+
+//Radio module communicates on teensy's serial8 port
+RadioModule radio(Serial8);
+
+//instantiate CANbus controller with baudrate and instance of radio module
+CANBusController _canBus(BAUD_RATE, radio);
+
+Status status;
 long _lasttime = 0;
 bool _isRadioConnected = false;
 
 void setup() {
   // put your setup code here, to run once:
-    // while(!Serial)
-    // while(!Serial8)
+    while(!Serial)
+    while(!Serial8)
 
     Serial.begin(9600);
     Serial8.begin(9600);
@@ -26,17 +31,12 @@ void setup() {
     Serial.flush();
     
     status.setup();
-    // status.setStatusLED(0, HIGH);
-    // status.setStatusLED(1, HIGH);
-    // status.setStatusLED(2, HIGH);
-    // status.setStatusLED(3, HIGH);
-    // status.setStatusLED(4, HIGH);
-    // status.setLEDBlink(2, DOUBLE_BLINK);
 
     radio.setup();
     _isRadioConnected = radio.checkRadio();
 
-
+    //if the radio check was succesful, blink with HIGH speed
+    //see status.h for blink speed definitions
     if (_isRadioConnected) {
       status.setStatusLED(0, HIGH);
     } else {
@@ -44,20 +44,28 @@ void setup() {
     }
 
     _canBus.setup();
-    // gpsSensor.setup();
-
 }
 
 void loop() {
+
   // put your main code here, to run repeatedly:
   Serial.flush();
+
+   //update state machine for status LEDs
   status.update();
-  // gpsSensor.update();
-  // if (millis() - _lasttime > 1000) {
-  //   radio.sendMessage((uint8_t *)"A", 1);
-  //   _lasttime = 0;
-  // }
+
+  //transmit the radio message every second
+  if (millis() - _lasttime > 1000) {
+    radio.sendMessage((uint8_t *)"A", 1);
+     _lasttime = 0;
+  }
+
+  //listen for a message from the radio 
   radio.update();
+
+  //check for updates on the CAN bus
   _canBus.update();
+
+  //wait 10 ms
   delay(10);
 }
