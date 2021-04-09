@@ -1,6 +1,8 @@
-The telemetry code repo contains all the code to gather and transmit sensor data for the BYU baja vehicle. 
+# Telemetry
 
-<b>Structure:</b>
+The telemetry code repo contains all the code to gather and transmit sensor data for the BYU baja vehicle. This is a platform io project. PlatformIO is just way to write code that is much easier to modify than Arduino's ino. Also it sets up much better with vscode.
+
+## Structure
 
 ```
 Main.cpp{
@@ -9,17 +11,17 @@ Main.cpp{
 
   void setup()
   {
-    Run setup() functions for all classes        
+    Run setup() functions for all classes
       - This will intialize the CAN bus, radio module etc.
   }
-  
+
   void loop()
   {
     Run each class's update() function.
       - CANbus.update() will check for incoming can messages and handle appropriately
       - RadioModule.update() will check for incoming message from the radio and handle appropriately
       - Status.update() updates the state machine that controls the status LEDs on the PCB.
-  } 
+  }
 
 }
 ```
