@@ -13,6 +13,8 @@ RadioModule radio(Serial8);
 //instantiate CANbus controller with baudrate and instance of radio module
 CANBusController _canBus(BAUD_RATE, radio);
 
+GPSSensor gps_(radio);
+
 Status status;
 long _lasttime = 0;
 bool _isRadioConnected = false;
@@ -33,7 +35,7 @@ void setup() {
     status.setup();
 
     radio.setup();
-    _isRadioConnected = radio.checkRadio();
+    // _isRadioConnected = radio.checkRadio();
 
     //if the radio check was succesful, blink with HIGH speed
     //see status.h for blink speed definitions
@@ -44,6 +46,7 @@ void setup() {
     }
 
     _canBus.setup();
+    gps_.setup();
 }
 
 void loop() {
@@ -55,16 +58,18 @@ void loop() {
   status.update();
 
   //transmit the radio message every second
-  if (millis() - _lasttime > 1000) {
-    radio.sendMessage((uint8_t *)"A", 1);
-     _lasttime = 0;
-  }
+  // if (millis() - _lasttime > 1000) {
+  //   radio.sendMessage((uint8_t *)"A", 1);
+  //    _lasttime = 0;
+  // }
 
   //listen for a message from the radio 
   radio.update();
 
   //check for updates on the CAN bus
   _canBus.update();
+
+  gps_.update();
 
   //wait 10 ms
   delay(10);

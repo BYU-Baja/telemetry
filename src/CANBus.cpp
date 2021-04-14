@@ -9,6 +9,7 @@
 
 #define TRANSPARENT
 #define DISPLAY_ADDR 0x16   //I2C address
+#define FUEL_ID 0x03
 #define SPEED_ID 0x04       //CAN bus id for speed
 #define RPM_ID 0x02         //CAN bus id for speed
 #define THROTTLE_ID 0x03    //CAN bus id for throttle position
@@ -79,7 +80,6 @@ void CANBusController::update() {
         Wire1.write(FUEL_ID);
         // conv.value = fuel;
         uint8_t scaled_fuel = (uint8_t)(fuel * 100);
-        Serial.println(scaled_fuel);
         Wire1.write(scaled_fuel);
         // Wire1.write(conv.data[0]);
         // Wire1.write(conv.data[1]);
